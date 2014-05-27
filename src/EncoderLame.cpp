@@ -125,14 +125,16 @@ void ADDON_Announce(const char *flag, const char *sender, const char *message, c
 class lame_context
 {
 public:
-  lame_context(audioenc_callbacks &cb, lame_global_flags *flgs) :
+  lame_context(audioenc_callbacks &cb, lame_global_flags *enc) :
     callbacks(cb),
-    flags(flgs)
+    encoder(enc),
+    audio_pos(0)
   {
   }
 
   audioenc_callbacks callbacks;   ///< callback structure for write/seek etc.
-  lame_global_flags* flags;       ///< lame encoder global flags
+  lame_global_flags* encoder;     ///< lame encoder context
+  int                audio_pos;   ///< audio position in file
 };
 
 
@@ -171,26 +173,38 @@ bool Start(void* ctx, int iInChannels, int iInRate, int iInBits,
   if (iInChannels != 2 || iInBits != 16)
     return false;
 
-  lame_set_in_samplerate(context->flags, iInRate);
+  lame_set_in_samplerate(context->encoder, iInRate);
+
+  // disable automatic ID3 tag writing - we'll write ourselves
+  lame_set_write_id3tag_automatic(context->encoder, 0);
 
   // Setup the ID3 tagger
-  id3tag_init(context->flags);
-  id3tag_add_v2(context->flags);
-  id3tag_set_title(context->flags, title);
-  id3tag_set_artist(context->flags, artist);
-  id3tag_set_textinfo_latin1(context->flags, "TPE2", albumartist);
-  id3tag_set_album(context->flags, album);
-  id3tag_set_year(context->flags, year);
-  id3tag_set_track(context->flags, track);
-  int test = id3tag_set_genre(context->flags, genre);
+  id3tag_init(context->encoder);
+  id3tag_add_v2(context->encoder);
+  id3tag_set_title(context->encoder, title);
+  id3tag_set_artist(context->encoder, artist);
+  id3tag_set_textinfo_latin1(context->encoder, "TPE2", albumartist);
+  id3tag_set_album(context->encoder, album);
+  id3tag_set_year(context->encoder, year);
+  id3tag_set_track(context->encoder, track);
+  int test = id3tag_set_genre(context->encoder, genre);
   if(test==-1)
-    id3tag_set_genre(context->flags,"Other");
+    id3tag_set_genre(context->encoder,"Other");
 
   // Now that all the options are set, lame needs to analyze them and
   // set some more internal options and check for problems
-  if (lame_init_params(context->flags) < 0)
+  if (lame_init_params(context->encoder) < 0)
   {
     return false;
+  }
+
+  // now write the ID3 tag information, storing the position
+  uint8_t  buffer[65536];
+  int tag_length = lame_get_id3v2_tag(context->encoder, buffer, sizeof(buffer));
+  if (tag_length)
+  {
+    context->callbacks.write(context->callbacks.opaque, buffer, tag_length);
+    context->audio_pos = tag_length;
   }
 
   return true;
@@ -213,7 +227,7 @@ int Encode(void* ctx, int nNumBytesRead, uint8_t* pbtStream)
   {
     const int frames = std::min(bytes_left / bytes_per_frame, 4096);
 
-    int written = lame_encode_buffer_interleaved(context->flags, (short*)pbtStream, frames, buffer, sizeof(buffer));
+    int written = lame_encode_buffer_interleaved(context->encoder, (short*)pbtStream, frames, buffer, sizeof(buffer));
     if (written < 0)
       return -1; // error
     context->callbacks.write(context->callbacks.opaque, buffer, written);
@@ -235,23 +249,24 @@ bool Finish(void* ctx)
   uint8_t  buffer[65536];
 
   // may return one more mp3 frames
-  int written = lame_encode_flush(context->flags, buffer, sizeof(buffer));
+  int written = lame_encode_flush(context->encoder, buffer, sizeof(buffer));
   if (written < 0)
     return false;
 
   context->callbacks.write(context->callbacks.opaque, buffer, written);
 
-  // TODO: add VBR tags to mp3 file...
-/*
-  FILE* file = fopen(File, "rb+");
-  if (!file)
-  {
-    return false;
-  }
+  // write id3v1 tag to file
+  int id3v1tag = lame_get_id3v1_tag(context->encoder, buffer, sizeof(buffer));
+  if (id3v1tag > 0)
+    context->callbacks.write(context->callbacks.opaque, buffer, id3v1tag);
 
-  lame_mp3_tags_fid(context->flags, file);
-  fclose(file);
-*/
+  // update LAME/Xing tag
+  int lameTag = lame_get_lametag_frame(context->encoder, buffer, sizeof(buffer));
+  if (context->audio_pos && lameTag > 0)
+  {
+    context->callbacks.seek(context->callbacks.opaque, context->audio_pos, SEEK_SET);
+    context->callbacks.write(context->callbacks.opaque, buffer, lameTag);
+  }
 
   return true;
 }
@@ -260,6 +275,6 @@ void Free(void *ctx)
 {
   lame_context *context = (lame_context*)ctx;
   if (context)
-    lame_close(context->flags);
+    lame_close(context->encoder);
 }
 }
