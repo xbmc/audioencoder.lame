@@ -22,8 +22,8 @@
 #include "xbmc/xbmc_audioenc_dll.h"
 #include <string.h>
 #include <stdlib.h>
+#include <algorithm>
 
-lame_global_flags* m_pGlobalFlags;
 // global settings
 int preset=-1;
 int bitrate;
@@ -121,46 +121,74 @@ void ADDON_Announce(const char *flag, const char *sender, const char *message, c
 {
 }
 
-bool Init(int iInChannels, int iInRate, int iInBits,
+// class to hold lame context
+class lame_context
+{
+public:
+  lame_context(audioenc_callbacks &cb, lame_global_flags *flgs) :
+    callbacks(cb),
+    flags(flgs)
+  {
+  }
+
+  audioenc_callbacks callbacks;   ///< callback structure for write/seek etc.
+  lame_global_flags* flags;       ///< lame encoder global flags
+};
+
+
+void* Create(audioenc_callbacks *callbacks)
+{
+  if (callbacks && callbacks->write)
+  {
+    lame_global_flags *enc = lame_init();
+    if (!enc)
+      return NULL;
+
+    if (preset == -1)
+      lame_set_brate(enc, bitrate);
+    else
+      lame_set_preset(enc, preset);
+
+    lame_set_asm_optimizations(enc, MMX, 1);
+    lame_set_asm_optimizations(enc, SSE, 1);
+
+    return new lame_context(*callbacks, enc);
+  }
+  return NULL;
+}
+
+bool Start(void* ctx, int iInChannels, int iInRate, int iInBits,
           const char* title, const char* artist,
           const char* albumartist, const char* album,
           const char* year, const char* track, const char* genre,
           const char* comment, int tracklength)
 {
-  // we only accept 2 / 44100 / 16 atm
-  if (iInChannels != 2 || iInRate != 44100 || iInBits != 16) return false;
-
-  m_pGlobalFlags = lame_init();
-  if (!m_pGlobalFlags)
-  {
+  lame_context *context = (lame_context*)ctx;
+  if (!context)
     return false;
-  }
 
-  if (preset == -1)
-    lame_set_brate(m_pGlobalFlags, bitrate);
-  else
-    lame_set_preset(m_pGlobalFlags, preset);
+  // we accept only 2 ch 16 bit atm
+  if (iInChannels != 2 || iInBits != 16)
+    return false;
 
-
-  lame_set_asm_optimizations(m_pGlobalFlags, MMX, 1);
-  lame_set_asm_optimizations(m_pGlobalFlags, SSE, 1);
-  lame_set_in_samplerate(m_pGlobalFlags, 44100);
+  lame_set_in_samplerate(context->flags, iInRate);
 
   // Setup the ID3 tagger
-  id3tag_init(m_pGlobalFlags);
-  id3tag_add_v2(m_pGlobalFlags);
-  id3tag_set_title(m_pGlobalFlags, title);
-  id3tag_set_artist(m_pGlobalFlags, artist);
-  id3tag_set_textinfo_latin1(m_pGlobalFlags, "TPE2", albumartist);
-  id3tag_set_album(m_pGlobalFlags, album);
-  id3tag_set_year(m_pGlobalFlags, year);
-  id3tag_set_track(m_pGlobalFlags, track);
-  int test = id3tag_set_genre(m_pGlobalFlags, genre);
+  id3tag_init(context->flags);
+  id3tag_add_v2(context->flags);
+  id3tag_set_title(context->flags, title);
+  id3tag_set_artist(context->flags, artist);
+  id3tag_set_textinfo_latin1(context->flags, "TPE2", albumartist);
+  id3tag_set_album(context->flags, album);
+  id3tag_set_year(context->flags, year);
+  id3tag_set_track(context->flags, track);
+  int test = id3tag_set_genre(context->flags, genre);
   if(test==-1)
-    id3tag_set_genre(m_pGlobalFlags,"Other");
+    id3tag_set_genre(context->flags,"Other");
+
   // Now that all the options are set, lame needs to analyze them and
   // set some more internal options and check for problems
-  if (lame_init_params(m_pGlobalFlags) < 0)
+  if (lame_init_params(context->flags) < 0)
   {
     return false;
   }
@@ -168,31 +196,70 @@ bool Init(int iInChannels, int iInRate, int iInBits,
   return true;
 }
 
-int Encode(int nNumBytesRead, uint8_t* pbtStream, uint8_t* buffer)
+int Encode(void* ctx, int nNumBytesRead, uint8_t* pbtStream)
 {
-  return lame_encode_buffer_interleaved(m_pGlobalFlags, (short*)pbtStream, nNumBytesRead / 4, buffer, 128*1024*1024);
+  lame_context *context = (lame_context*)ctx;
+  if (!context)
+    return -1;
+
+  // note: assumes 2ch 16bit atm
+  const int bytes_per_frame = 2*2;
+
+  // buffer for encoded audio. Should be at least 1.25*num_samples + 7200
+  uint8_t  buffer[65536];
+
+  int bytes_left = nNumBytesRead;
+  while (bytes_left)
+  {
+    const int frames = std::min(bytes_left / bytes_per_frame, 4096);
+
+    int written = lame_encode_buffer_interleaved(context->flags, (short*)pbtStream, frames, buffer, sizeof(buffer));
+    if (written < 0)
+      return -1; // error
+    context->callbacks.write(context->callbacks.opaque, buffer, written);
+
+    pbtStream  += frames * bytes_per_frame;
+    bytes_left -= frames * bytes_per_frame;
+  }
+
+  return nNumBytesRead - bytes_left;
 }
 
-int Flush(uint8_t* buffer)
+bool Finish(void* ctx)
 {
+  lame_context *context = (lame_context*)ctx;
+  if (!context)
+    return false;
+
+  // buffer for encoded audio.
+  uint8_t  buffer[65536];
+
   // may return one more mp3 frames
-  return lame_encode_flush(m_pGlobalFlags, buffer, 128*1024*1024);
-}
+  int written = lame_encode_flush(context->flags, buffer, sizeof(buffer));
+  if (written < 0)
+    return false;
 
-bool Close(const char* File)
-{
-  // open again, but now the old way, lame only accepts FILE pointers
+  context->callbacks.write(context->callbacks.opaque, buffer, written);
+
+  // TODO: add VBR tags to mp3 file...
+/*
   FILE* file = fopen(File, "rb+");
   if (!file)
   {
     return false;
   }
 
-  lame_mp3_tags_fid(m_pGlobalFlags, file); /* add VBR tags to mp3 file */
+  lame_mp3_tags_fid(context->flags, file);
   fclose(file);
-
-  lame_close(m_pGlobalFlags);
+*/
 
   return true;
+}
+
+void Free(void *ctx)
+{
+  lame_context *context = (lame_context*)ctx;
+  if (context)
+    lame_close(context->flags);
 }
 }
