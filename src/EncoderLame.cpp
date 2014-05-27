@@ -132,9 +132,10 @@ public:
   {
   }
 
-  audioenc_callbacks callbacks;   ///< callback structure for write/seek etc.
-  lame_global_flags* encoder;     ///< lame encoder context
-  int                audio_pos;   ///< audio position in file
+  audioenc_callbacks callbacks;     ///< callback structure for write/seek etc.
+  lame_global_flags* encoder;       ///< lame encoder context
+  int                audio_pos;     ///< audio position in file
+  uint8_t            buffer[65536]; ///< buffer for writing out audio data
 };
 
 
@@ -199,11 +200,10 @@ bool Start(void* ctx, int iInChannels, int iInRate, int iInBits,
   }
 
   // now write the ID3 tag information, storing the position
-  uint8_t  buffer[65536];
-  int tag_length = lame_get_id3v2_tag(context->encoder, buffer, sizeof(buffer));
+  int tag_length = lame_get_id3v2_tag(context->encoder, context->buffer, sizeof(context->buffer));
   if (tag_length)
   {
-    context->callbacks.write(context->callbacks.opaque, buffer, tag_length);
+    context->callbacks.write(context->callbacks.opaque, context->buffer, tag_length);
     context->audio_pos = tag_length;
   }
 
@@ -219,18 +219,15 @@ int Encode(void* ctx, int nNumBytesRead, uint8_t* pbtStream)
   // note: assumes 2ch 16bit atm
   const int bytes_per_frame = 2*2;
 
-  // buffer for encoded audio. Should be at least 1.25*num_samples + 7200
-  uint8_t  buffer[65536];
-
   int bytes_left = nNumBytesRead;
   while (bytes_left)
   {
     const int frames = std::min(bytes_left / bytes_per_frame, 4096);
 
-    int written = lame_encode_buffer_interleaved(context->encoder, (short*)pbtStream, frames, buffer, sizeof(buffer));
+    int written = lame_encode_buffer_interleaved(context->encoder, (short*)pbtStream, frames, context->buffer, sizeof(context->buffer));
     if (written < 0)
       return -1; // error
-    context->callbacks.write(context->callbacks.opaque, buffer, written);
+    context->callbacks.write(context->callbacks.opaque, context->buffer, written);
 
     pbtStream  += frames * bytes_per_frame;
     bytes_left -= frames * bytes_per_frame;
@@ -245,27 +242,24 @@ bool Finish(void* ctx)
   if (!context)
     return false;
 
-  // buffer for encoded audio.
-  uint8_t  buffer[65536];
-
   // may return one more mp3 frames
-  int written = lame_encode_flush(context->encoder, buffer, sizeof(buffer));
+  int written = lame_encode_flush(context->encoder, context->buffer, sizeof(context->buffer));
   if (written < 0)
     return false;
 
-  context->callbacks.write(context->callbacks.opaque, buffer, written);
+  context->callbacks.write(context->callbacks.opaque, context->buffer, written);
 
   // write id3v1 tag to file
-  int id3v1tag = lame_get_id3v1_tag(context->encoder, buffer, sizeof(buffer));
+  int id3v1tag = lame_get_id3v1_tag(context->encoder, context->buffer, sizeof(context->buffer));
   if (id3v1tag > 0)
-    context->callbacks.write(context->callbacks.opaque, buffer, id3v1tag);
+    context->callbacks.write(context->callbacks.opaque, context->buffer, id3v1tag);
 
   // update LAME/Xing tag
-  int lameTag = lame_get_lametag_frame(context->encoder, buffer, sizeof(buffer));
+  int lameTag = lame_get_lametag_frame(context->encoder, context->buffer, sizeof(context->buffer));
   if (context->audio_pos && lameTag > 0)
   {
     context->callbacks.seek(context->callbacks.opaque, context->audio_pos, SEEK_SET);
-    context->callbacks.write(context->callbacks.opaque, buffer, lameTag);
+    context->callbacks.write(context->callbacks.opaque, context->buffer, lameTag);
   }
 
   return true;
