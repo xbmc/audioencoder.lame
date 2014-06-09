@@ -8,6 +8,9 @@ enable_language(CXX)
 
 find_package(xbmc REQUIRED)
 find_package(Lame REQUIRED)
+if(WIN32)
+  find_package(MPGHIP REQUIRED)
+endif()
 
 include_directories(${XBMC_INCLUDE_DIR}
                     ${LAME_INCLUDE_DIRS})
@@ -15,5 +18,8 @@ include_directories(${XBMC_INCLUDE_DIR}
 set(LAME_SOURCES src/EncoderLame.cpp)
 
 set(DEPLIBS ${LAME_LIBRARIES})
+if(WIN32)
+  list(APPEND DEPLIBS ${MPGHIP_LIBRARIES})
+endif()
 
 build_addon(audioencoder.lame LAME DEPLIBS)

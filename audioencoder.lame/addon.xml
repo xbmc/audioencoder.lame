@@ -12,7 +12,8 @@
     extension=".mp3"
     library_linux="audioencoder.lame.so"
     library_android="libaudioencoder.lame.so"
-    library_osx="audioencoder.lame.dylib"/>
+    library_osx="audioencoder.lame.dylib"
+    library_windx="audioencoder.lame.dll"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Lame MP3 Audio Encoder</summary>
     <description lang="en">Lame MP3 Audio Encoder</description>
