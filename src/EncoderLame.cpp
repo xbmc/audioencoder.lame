@@ -19,7 +19,7 @@
  */
 
 #include <lame/lame.h>
-#include "xbmc/xbmc_audioenc_dll.h"
+#include "kodi/xbmc_audioenc_dll.h"
 #include <string.h>
 #include <stdlib.h>
 #include <algorithm>
