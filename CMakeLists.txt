@@ -6,13 +6,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
 
 enable_language(CXX)
 
-find_package(xbmc REQUIRED)
+find_package(kodi REQUIRED)
 find_package(Lame REQUIRED)
 if(WIN32)
   find_package(MPGHIP REQUIRED)
 endif()
 
-include_directories(${XBMC_INCLUDE_DIR}
+include_directories(${KODI_INCLUDE_DIR}
                     ${LAME_INCLUDE_DIRS})
 
 set(LAME_SOURCES src/EncoderLame.cpp)
