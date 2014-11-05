@@ -10,6 +10,8 @@ externalproject_add(lame
                       --disable-gtktest
                       --disable-frontend
                       --disable-decoder
+                      --disable-shared
+                      "CFLAGS=-fPIC -DPIC"
                     BUILD_COMMAND make -C libmp3lame
                     INSTALL_COMMAND ""
                     BUILD_IN_SOURCE 1)
