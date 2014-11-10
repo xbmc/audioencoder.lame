@@ -1,22 +1,22 @@
-Source: xbmc-audioencoder-lame
+Source: kodi-audioencoder-lame
 Priority: extra
 Maintainer: Arne Morten Kvarving <spiff@xbmc.org>
-Build-Depends: debhelper (>= 8.0.0), cmake, xbmc-addon-dev, xbmc-audio-dev, libtool, libmp3lame-dev
+Build-Depends: debhelper (>= 8.0.0), cmake, kodi-addon-dev, kodi-audio-dev, libtool, libmp3lame-dev
 Standards-Version: 3.9.2
 Section: libs
-Homepage: http://xbmc.org
+Homepage: http://kodi.tv
 
-Package: xbmc-audioencoder-lame
+Package: kodi-audioencoder-lame
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: FLAC audio encoder for XBMC
- FLAC audio encoder for XBMC
+Description: FLAC audio encoder for Kodi
+ FLAC audio encoder for Kodi
 
-Package: xbmc-audioencoder-lame-dbg
+Package: kodi-audioencoder-lame-dbg
 Section: debug
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: debug symbols for FLAC audio encoder for XBMC
- debug symbols for FLAC audio encoder for XBMC
+Description: debug symbols for FLAC audio encoder for Kodi
+ debug symbols for FLAC audio encoder for Kodi
 
