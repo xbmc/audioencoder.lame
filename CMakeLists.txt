@@ -23,3 +23,5 @@ if(WIN32)
 endif()
 
 build_addon(audioencoder.lame LAME DEPLIBS)
+
+include(CPack)
