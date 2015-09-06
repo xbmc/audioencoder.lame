@@ -1,0 +1,93 @@
+Description: Unbreak compilation with gcc 4.4
+ This patch is only necessary before gcc 4.5, such as gcc 4.4 in debian/squeeze.
+ Actually, this is a workaround in config.h for a workaround in the autoconf
+ generated configure script, which comments out every #undef CPP statement.
+ This is actually documented in the autoconf manual, like here:
+ http://www.gnu.org/s/hello/manual/autoconf/Header-Templates.html
+Author: Reinhard Tartler <siretart@tauware.de>
+
+
+
+--- a/config.h.in
++++ b/config.h.in
+@@ -56,12 +56,14 @@
+ /* add ieee754_float32_t type */
+ #undef HAVE_IEEE754_FLOAT32_T
+ #ifndef HAVE_IEEE754_FLOAT32_T
++#define HAVE_IEEE754_FLOAT32_T
+ 	typedef float ieee754_float32_t;
+ #endif
+ 
+ /* add ieee754_float64_t type */
+ #undef HAVE_IEEE754_FLOAT64_T
+ #ifndef HAVE_IEEE754_FLOAT64_T
++#define HAVE_IEEE754_FLOAT64_T
+ 	typedef double ieee754_float64_t;
+ #endif
+ 
+@@ -71,6 +73,7 @@
+ /* add ieee854_float80_t type */
+ #undef HAVE_IEEE854_FLOAT80_T
+ #ifndef HAVE_IEEE854_FLOAT80_T
++#define HAVE_IEEE854_FLOAT80_T
+ 	typedef long double ieee854_float80_t;
+ #endif
+ 
+--- a/configure.in
++++ b/configure.in
+@@ -147,6 +147,7 @@
+ [/* add uint8_t type */
+ #undef HAVE_UINT8_T
+ #ifndef HAVE_UINT8_T
++#define HAVE_UINT8_T
+ 	typedef unsigned char uint8_t;
+ #endif])
+ 
+@@ -154,6 +155,7 @@
+ [/* add int8_t type */
+ #undef HAVE_INT8_T
+ #ifndef HAVE_INT8_T
++#define HAVE_INT8_T
+ 	typedef char int8_t;
+ #endif])
+ 
+@@ -161,6 +163,7 @@
+ [/* add uint16_t type */
+ #undef HAVE_UINT16_T
+ #ifndef HAVE_UINT16_T
++#define HAVE_UINT16_T
+ 	typedef unsigned short uint16_t;
+ #endif])
+ 
+@@ -168,6 +171,7 @@
+ [/* add int16_t type */
+ #undef HAVE_INT16_T
+ #ifndef HAVE_INT16_T
++#define HAVE_INT16_T
+ 	typedef short int16_t;
+ #endif])
+ 
+@@ -275,6 +279,7 @@
+ [/* add ieee854_float80_t type */
+ #undef HAVE_IEEE854_FLOAT80_T
+ #ifndef HAVE_IEEE854_FLOAT80_T
++#define HAVE_IEEE854_FLOAT80_T
+ 	typedef long double ieee854_float80_t;
+ #endif])
+ 
+@@ -287,6 +292,7 @@
+ [/* add ieee754_float64_t type */
+ #undef HAVE_IEEE754_FLOAT64_T
+ #ifndef HAVE_IEEE754_FLOAT64_T
++#define HAVE_IEEE754_FLOAT64_T
+ 	typedef double ieee754_float64_t;
+ #endif])
+ 
+@@ -294,6 +300,7 @@
+ [/* add ieee754_float32_t type */
+ #undef HAVE_IEEE754_FLOAT32_T
+ #ifndef HAVE_IEEE754_FLOAT32_T
++#define HAVE_IEEE754_FLOAT32_T
+ 	typedef float ieee754_float32_t;
+ #endif])
+ 
