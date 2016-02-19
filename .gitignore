@@ -1,0 +1,23 @@
+# build artifacts
+build/
+debian/changelog
+debian/files
+audioencoder.lame/addon.xml
+debian/kodi-audioencoder-lame-dbg.debhelper.log
+debian/kodi-audioencoder-lame-dbg.substvars
+debian/kodi-audioencoder-lame-dbg/
+debian/kodi-audioencoder-lame.debhelper.log
+debian/kodi-audioencoder-lame.postinst.debhelper
+debian/kodi-audioencoder-lame.postrm.debhelper
+debian/kodi-audioencoder-lame.substvars
+debian/kodi-audioencoder-lame/
+debian/tmp/
+obj-x86_64-linux-gnu/
+
+# clion
+.idea/
+
+# Eclipse/CDT
+.cproject
+.project
+.settings/
