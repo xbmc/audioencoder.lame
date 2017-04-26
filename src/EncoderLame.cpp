@@ -53,15 +53,6 @@ void ADDON_Destroy()
 {
 }
 
-//-- HasSettings --------------------------------------------------------------
-// Returns true if this add-on use settings
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-bool ADDON_HasSettings()
-{
-  return true;
-}
-
 //-- GetStatus ---------------------------------------------------------------
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
@@ -69,24 +60,6 @@ bool ADDON_HasSettings()
 ADDON_STATUS ADDON_GetStatus()
 {
   return ADDON_STATUS_OK;
-}
-
-//-- GetSettings --------------------------------------------------------------
-// Return the settings for XBMC to display
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-extern "C" unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
-{
-  return 0;
-}
-
-//-- FreeSettings --------------------------------------------------------------
-// Free the settings struct passed from XBMC
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-
-void ADDON_FreeSettings()
-{
 }
 
 //-- SetSetting ---------------------------------------------------------------
@@ -111,14 +84,6 @@ ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* value)
     bitrate = 128 + 32 * ival;
   }
   return ADDON_STATUS_OK;
-}
-
-//-- Announce -----------------------------------------------------------------
-// Receive announcements from XBMC
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-void ADDON_Announce(const char *flag, const char *sender, const char *message, const void *data)
-{
 }
 
 // class to hold lame context
