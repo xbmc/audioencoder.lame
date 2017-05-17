@@ -1,7 +1,7 @@
 Source: kodi-audioencoder-lame
 Priority: extra
 Maintainer: Arne Morten Kvarving <spiff@xbmc.org>
-Build-Depends: debhelper (>= 8.0.0), cmake, kodi-addon-dev, kodi-audio-dev, libtool, libmp3lame-dev
+Build-Depends: debhelper (>= 8.0.0), cmake, kodi-addon-dev, libtool, libmp3lame-dev
 Standards-Version: 3.9.6
 Section: libs
 Homepage: http://kodi.tv
