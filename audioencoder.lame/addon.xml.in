@@ -11,7 +11,7 @@
     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Lame MP3 Audio Encoder</summary>
-    <description lang="en">Lame MP3 Audio Encoder</description>
+    <description lang="en">It use LAME, the high quality MPEG Audio Layer III (MP3) encoder licensed under the LGPL.</description>
     <platform>@PLATFORM@</platform>
   </extension>
 </addon>
