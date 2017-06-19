@@ -19,213 +19,195 @@
  */
 
 #include <lame/lame.h>
-#include "xbmc_audioenc_dll.h"
+#include <kodi/addon-instance/AudioEncoder.h>
 #include <string.h>
 #include <stdlib.h>
 #include <algorithm>
 
-// global settings
-int preset=-1;
-int bitrate;
-
-extern "C" {
-//-- Create -------------------------------------------------------------------
-// Called on load. Addon should fully initalize or return error status
-//-----------------------------------------------------------------------------
-ADDON_STATUS ADDON_Create(void* hdl, void* props)
-{
-  return ADDON_STATUS_NEED_SETTINGS;
-}
-
-//-- Destroy ------------------------------------------------------------------
-// Do everything before unload of this add-on
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-void ADDON_Destroy()
-{
-}
-
-//-- GetStatus ---------------------------------------------------------------
-// Returns the current Status of this visualisation
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-ADDON_STATUS ADDON_GetStatus()
-{
-  return ADDON_STATUS_OK;
-}
-
-//-- SetSetting ---------------------------------------------------------------
-// Set a specific Setting value (called from XBMC)
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* value)
-{
-  if (strcmp(strSetting,"preset") == 0)
-  {
-    int ival = *((int*)value);
-    if (ival == 0)
-      preset = MEDIUM;
-    else if (ival == 1)
-      preset = STANDARD;
-    else if (ival == 2)
-      preset = EXTREME;
-  }
-  if (strcmp(strSetting,"bitrate") == 0)
-  {
-    int ival = *((int*)value);
-    bitrate = 128 + 32 * ival;
-  }
-  return ADDON_STATUS_OK;
-}
-
-// class to hold lame context
-class lame_context
+class CEncoderLame : public kodi::addon::CInstanceAudioEncoder
 {
 public:
-  lame_context(audioenc_callbacks &cb, lame_global_flags *enc) :
-    callbacks(cb),
-    encoder(enc),
-    audio_pos(0)
-  {
-  }
+  CEncoderLame(KODI_HANDLE instance);
+  virtual ~CEncoderLame();
 
-  audioenc_callbacks callbacks;     ///< callback structure for write/seek etc.
-  lame_global_flags* encoder;       ///< lame encoder context
-  int                audio_pos;     ///< audio position in file
-  uint8_t            buffer[65536]; ///< buffer for writing out audio data
+  virtual bool Start(int inChannels,
+                     int inRate,
+                     int inBits,
+                     const std::string& title,
+                     const std::string& artist,
+                     const std::string& albumartist,
+                     const std::string& album,
+                     const std::string& year,
+                     const std::string& track,
+                     const std::string& genre,
+                     const std::string& comment,
+                     int trackLength) override;
+  virtual int Encode(int numBytesRead, const uint8_t* stream) override;
+  virtual bool Finish() override;
+
+private:
+  lame_global_flags* m_encoder;       ///< lame encoder context
+  int                m_audio_pos;     ///< audio position in file
+  uint8_t            m_buffer[65536]; ///< buffer for writing out audio data
+  int                m_preset;
+  int                m_bitrate;
 };
 
 
-void* Create(audioenc_callbacks *callbacks)
+CEncoderLame::CEncoderLame(KODI_HANDLE instance)
+  : CInstanceAudioEncoder(instance),
+    m_audio_pos(0),
+    m_preset(-1)
 {
-  if (callbacks && callbacks->write)
+  m_encoder = lame_init();
+  if (!m_encoder)
   {
-    lame_global_flags *enc = lame_init();
-    if (!enc)
-      return NULL;
-
-    if (preset == -1)
-      lame_set_brate(enc, bitrate);
-    else
-      lame_set_preset(enc, preset);
-
-    lame_set_asm_optimizations(enc, MMX, 1);
-    lame_set_asm_optimizations(enc, SSE, 1);
-
-    return new lame_context(*callbacks, enc);
+    kodi::Log(ADDON_LOG_ERROR, "Failed to construct lame stream encoder");
+    return;
   }
-  return NULL;
+
+  int value = kodi::GetSettingInt("preset");
+  if (value == 0)
+    m_preset = MEDIUM;
+  else if (value == 1)
+    m_preset = STANDARD;
+  else if (value == 2)
+    m_preset = EXTREME;
+
+  m_bitrate = 128 + 32 * kodi::GetSettingInt("bitrate");
+
+  if (m_preset == -1)
+    lame_set_brate(m_encoder, m_bitrate);
+  else
+    lame_set_preset(m_encoder, m_preset);
+
+  lame_set_asm_optimizations(m_encoder, MMX, 1);
+  lame_set_asm_optimizations(m_encoder, SSE, 1);
 }
 
-bool Start(void* ctx, int iInChannels, int iInRate, int iInBits,
-          const char* title, const char* artist,
-          const char* albumartist, const char* album,
-          const char* year, const char* track, const char* genre,
-          const char* comment, int tracklength)
+CEncoderLame::~CEncoderLame()
 {
-  lame_context *context = (lame_context*)ctx;
-  if (!context)
+  lame_close(m_encoder);
+}
+
+bool CEncoderLame::Start(int inChannels, int inRate, int inBits,
+                         const std::string& title, const std::string& artist,
+                         const std::string& albumartist, const std::string& album,
+                         const std::string& year, const std::string& track, const std::string& genre,
+                         const std::string& comment, int trackLength)
+{
+  if (!m_encoder)
     return false;
 
   // we accept only 2 ch 16 bit atm
-  if (iInChannels != 2 || iInBits != 16)
+  if (inChannels != 2 || inBits != 16)
+  {
+    kodi::Log(ADDON_LOG_ERROR, "Invalid input format to encode");
     return false;
+  }
 
-  lame_set_in_samplerate(context->encoder, iInRate);
+  lame_set_in_samplerate(m_encoder, inRate);
 
   // disable automatic ID3 tag writing - we'll write ourselves
-  lame_set_write_id3tag_automatic(context->encoder, 0);
+  lame_set_write_id3tag_automatic(m_encoder, 0);
 
   // Setup the ID3 tagger
-  id3tag_init(context->encoder);
-  id3tag_add_v2(context->encoder);
-  id3tag_set_title(context->encoder, title);
-  id3tag_set_artist(context->encoder, artist);
-  id3tag_set_textinfo_latin1(context->encoder, "TPE2", albumartist);
-  id3tag_set_album(context->encoder, album);
-  id3tag_set_year(context->encoder, year);
-  id3tag_set_track(context->encoder, track);
-  int test = id3tag_set_genre(context->encoder, genre);
+  id3tag_init(m_encoder);
+  id3tag_add_v2(m_encoder);
+  id3tag_set_title(m_encoder, title.c_str());
+  id3tag_set_artist(m_encoder, artist.c_str());
+  id3tag_set_textinfo_latin1(m_encoder, "TPE2", albumartist.c_str());
+  id3tag_set_album(m_encoder, album.c_str());
+  id3tag_set_year(m_encoder, year.c_str());
+  id3tag_set_track(m_encoder, track.c_str());
+  int test = id3tag_set_genre(m_encoder, genre.c_str());
   if(test==-1)
-    id3tag_set_genre(context->encoder,"Other");
+    id3tag_set_genre(m_encoder, "Other");
 
   // Now that all the options are set, lame needs to analyze them and
   // set some more internal options and check for problems
-  if (lame_init_params(context->encoder) < 0)
+  if (lame_init_params(m_encoder) < 0)
   {
     return false;
   }
 
   // now write the ID3 tag information, storing the position
-  int tag_length = lame_get_id3v2_tag(context->encoder, context->buffer, sizeof(context->buffer));
+  int tag_length = lame_get_id3v2_tag(m_encoder, m_buffer, sizeof(m_buffer));
   if (tag_length)
   {
-    context->callbacks.write(context->callbacks.opaque, context->buffer, tag_length);
-    context->audio_pos = tag_length;
+    Write(m_buffer, tag_length);
+    m_audio_pos = tag_length;
   }
 
   return true;
 }
 
-int Encode(void* ctx, int nNumBytesRead, uint8_t* pbtStream)
+int CEncoderLame::Encode(int numBytesRead, const uint8_t* stream)
 {
-  lame_context *context = (lame_context*)ctx;
-  if (!context)
+  if (!m_encoder)
     return -1;
 
   // note: assumes 2ch 16bit atm
   const int bytes_per_frame = 2*2;
 
-  int bytes_left = nNumBytesRead;
+  int bytes_left = numBytesRead;
   while (bytes_left)
   {
     const int frames = std::min(bytes_left / bytes_per_frame, 4096);
 
-    int written = lame_encode_buffer_interleaved(context->encoder, (short*)pbtStream, frames, context->buffer, sizeof(context->buffer));
+    int written = lame_encode_buffer_interleaved(m_encoder, (short*)stream, frames, m_buffer, sizeof(m_buffer));
     if (written < 0)
       return -1; // error
-    context->callbacks.write(context->callbacks.opaque, context->buffer, written);
+    Write(m_buffer, written);
 
-    pbtStream  += frames * bytes_per_frame;
+    stream += frames * bytes_per_frame;
     bytes_left -= frames * bytes_per_frame;
   }
 
-  return nNumBytesRead - bytes_left;
+  return numBytesRead - bytes_left;
 }
 
-bool Finish(void* ctx)
+bool CEncoderLame::Finish()
 {
-  lame_context *context = (lame_context*)ctx;
-  if (!context)
+  if (!m_encoder)
     return false;
 
   // may return one more mp3 frames
-  int written = lame_encode_flush(context->encoder, context->buffer, sizeof(context->buffer));
+  int written = lame_encode_flush(m_encoder, m_buffer, sizeof(m_buffer));
   if (written < 0)
     return false;
 
-  context->callbacks.write(context->callbacks.opaque, context->buffer, written);
+  Write(m_buffer, written);
 
   // write id3v1 tag to file
-  int id3v1tag = lame_get_id3v1_tag(context->encoder, context->buffer, sizeof(context->buffer));
+  int id3v1tag = lame_get_id3v1_tag(m_encoder, m_buffer, sizeof(m_buffer));
   if (id3v1tag > 0)
-    context->callbacks.write(context->callbacks.opaque, context->buffer, id3v1tag);
+    Write(m_buffer, id3v1tag);
 
   // update LAME/Xing tag
-  int lameTag = lame_get_lametag_frame(context->encoder, context->buffer, sizeof(context->buffer));
-  if (context->audio_pos && lameTag > 0)
+  int lameTag = lame_get_lametag_frame(m_encoder, m_buffer, sizeof(m_buffer));
+  if (m_audio_pos && lameTag > 0)
   {
-    context->callbacks.seek(context->callbacks.opaque, context->audio_pos, SEEK_SET);
-    context->callbacks.write(context->callbacks.opaque, context->buffer, lameTag);
+    Seek(m_audio_pos, SEEK_SET);
+    Write(m_buffer, lameTag);
   }
 
   return true;
 }
 
-void Free(void *ctx)
+//------------------------------------------------------------------------------
+
+class CMyAddon : public kodi::addon::CAddonBase
 {
-  lame_context *context = (lame_context*)ctx;
-  if (context)
-    lame_close(context->encoder);
+public:
+  CMyAddon() { }
+  virtual ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance) override;
+};
+
+ADDON_STATUS CMyAddon::CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance)
+{
+  addonInstance = new CEncoderLame(instance);
+  return ADDON_STATUS_OK;
 }
-}
+
+ADDONCREATOR(CMyAddon)
