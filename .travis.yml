@@ -33,10 +33,7 @@ matrix:
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which cmake || brew install cmake; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install lame; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link gettext --force; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq -y libtool libmp3lame-dev; fi
 
 #
 # The addon source is automatically checked out in $TRAVIS_BUILD_DIR,
