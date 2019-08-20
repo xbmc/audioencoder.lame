@@ -1,6 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
 project(lame)
-
-cmake_minimum_required(VERSION 2.8)
 
 file(RENAME ${PROJECT_SOURCE_DIR}/configMS.h ${PROJECT_SOURCE_DIR}/config.h)
 
