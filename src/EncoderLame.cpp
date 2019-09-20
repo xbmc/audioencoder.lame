@@ -28,22 +28,22 @@ class CEncoderLame : public kodi::addon::CInstanceAudioEncoder
 {
 public:
   CEncoderLame(KODI_HANDLE instance);
-  virtual ~CEncoderLame();
+  ~CEncoderLame() override;
 
-  virtual bool Start(int inChannels,
-                     int inRate,
-                     int inBits,
-                     const std::string& title,
-                     const std::string& artist,
-                     const std::string& albumartist,
-                     const std::string& album,
-                     const std::string& year,
-                     const std::string& track,
-                     const std::string& genre,
-                     const std::string& comment,
-                     int trackLength) override;
-  virtual int Encode(int numBytesRead, const uint8_t* stream) override;
-  virtual bool Finish() override;
+  bool Start(int inChannels,
+             int inRate,
+             int inBits,
+             const std::string& title,
+             const std::string& artist,
+             const std::string& albumartist,
+             const std::string& album,
+             const std::string& year,
+             const std::string& track,
+             const std::string& genre,
+             const std::string& comment,
+             int trackLength) override;
+  int Encode(int numBytesRead, const uint8_t* stream) override;
+  bool Finish() override;
 
 private:
   lame_global_flags* m_encoder;       ///< lame encoder context
@@ -200,8 +200,8 @@ bool CEncoderLame::Finish()
 class CMyAddon : public kodi::addon::CAddonBase
 {
 public:
-  CMyAddon() { }
-  virtual ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance) override;
+  CMyAddon() = default;
+  ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance) override;
 };
 
 ADDON_STATUS CMyAddon::CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance)
