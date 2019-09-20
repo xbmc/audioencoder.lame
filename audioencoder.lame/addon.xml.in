@@ -10,7 +10,7 @@
     extension=".mp3"
     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Lame MP3 Audio Encoder</summary>
+    <summary lang="en">LAME is a high quality MPEG Audio Layer III (MP3)</summary>
     <description lang="en">It use LAME, the high quality MPEG Audio Layer III (MP3) encoder licensed under the LGPL.</description>
     <platform>@PLATFORM@</platform>
   </extension>
