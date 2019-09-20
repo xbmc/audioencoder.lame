@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <algorithm>
 
-class CEncoderLame : public kodi::addon::CInstanceAudioEncoder
+class ATTRIBUTE_HIDDEN CEncoderLame : public kodi::addon::CInstanceAudioEncoder
 {
 public:
   CEncoderLame(KODI_HANDLE instance);
@@ -197,7 +197,7 @@ bool CEncoderLame::Finish()
 
 //------------------------------------------------------------------------------
 
-class CMyAddon : public kodi::addon::CAddonBase
+class ATTRIBUTE_HIDDEN CMyAddon : public kodi::addon::CAddonBase
 {
 public:
   CMyAddon() = default;
