@@ -6,7 +6,7 @@ Applied-Upstream: commit:1.282
 
 --- a/frontend/parse.c
 +++ b/frontend/parse.c
-@@ -372,11 +372,11 @@
+@@ -402,11 +402,11 @@ lame_version_print(FILE * const fp)
      const char *b = get_lame_os_bitness();
      const char *v = get_lame_version();
      const char *u = get_lame_url();
