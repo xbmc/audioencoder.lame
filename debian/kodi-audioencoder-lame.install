@@ -1,3 +1,2 @@
-usr/lib/*/addons/audioencoder.lame/audioencoder.lame.so* /usr/lib/kodi/addons/audioencoder.lame
-usr/share/kodi/addons/audioencoder.lame
-
+usr/lib/*
+usr/share/*
