@@ -4,8 +4,9 @@ This is a [Kodi] (https://kodi.tv) LAME audio encoder add-on.
 
 #### CI Testing
 [![Build Status](https://travis-ci.org/xbmc/audioencoder.lame.svg?branch=Matrix)](https://travis-ci.org/xbmc/audioencoder.lame/branches)
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/xbmc/audioencoder.lame?branch=Matrix&svg=true)](https://ci.appveyor.com/project/xbmc/audioencoder-lame?branch=Matrix)
+[![Build Status](https://dev.azure.com/teamkodi/binary-addons/_apis/build/status/xbmc.audioencoder.lame?branchName=Matrix)](https://dev.azure.com/teamkodi/binary-addons/_build/latest?definitionId=22&branchName=Matrix)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/5120/badge.svg)](https://scan.coverity.com/projects/5120)
+<!--- [![Build Status](https://ci.appveyor.com/api/projects/status/github/xbmc/audioencoder.lame?branch=Matrix&svg=true)](https://ci.appveyor.com/project/xbmc/audioencoder-lame?branch=Matrix) -->
 
 ## Build instructions
 
