@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="audioencoder.lame"
-  version="2.0.3"
+  version="2.1.0"
   name="Lame MP3 Audio Encoder"
   provider-name="spiff">
   <requires>@ADDON_DEPENDS@</requires>
@@ -13,5 +13,10 @@
     <summary lang="en">LAME is a high quality MPEG Audio Layer III (MP3)</summary>
     <description lang="en">It use LAME, the high quality MPEG Audio Layer III (MP3) encoder licensed under the LGPL.</description>
     <platform>@PLATFORM@</platform>
+    <license>GPL-2.0</license>
+    <source>https://github.com/xbmc/audioencoder.lame</source>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
   </extension>
 </addon>
