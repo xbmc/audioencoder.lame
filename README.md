@@ -4,6 +4,7 @@ This is a [Kodi] (http://kodi.tv) LAME audio encoder add-on.
 
 #### CI Testing
 [![Build Status](https://travis-ci.org/xbmc/audioencoder.lame.svg?branch=master)](https://travis-ci.org/xbmc/audioencoder.lame)
+[![Build Status](https://dev.azure.com/teamkodi/binary-addons/_apis/build/status/xbmc.audioencoder.lame?branchName=Leia)](https://dev.azure.com/teamkodi/binary-addons/_build/latest?definitionId=22&branchName=Leia)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/5120/badge.svg)](https://scan.coverity.com/projects/5120)
 
 ## Build instructions
