@@ -14,7 +14,7 @@
 class ATTRIBUTE_HIDDEN CEncoderLame : public kodi::addon::CInstanceAudioEncoder
 {
 public:
-  CEncoderLame(KODI_HANDLE instance);
+  CEncoderLame(KODI_HANDLE instance, const std::string& version);
   ~CEncoderLame() override;
 
   bool Start(int inChannels,
@@ -41,8 +41,8 @@ private:
 };
 
 
-CEncoderLame::CEncoderLame(KODI_HANDLE instance)
-  : CInstanceAudioEncoder(instance),
+CEncoderLame::CEncoderLame(KODI_HANDLE instance, const std::string& version)
+  : CInstanceAudioEncoder(instance, version),
     m_audio_pos(0),
     m_preset(-1)
 {
@@ -188,12 +188,12 @@ class ATTRIBUTE_HIDDEN CMyAddon : public kodi::addon::CAddonBase
 {
 public:
   CMyAddon() = default;
-  ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance) override;
+  ADDON_STATUS CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, const std::string& version, KODI_HANDLE& addonInstance) override;
 };
 
-ADDON_STATUS CMyAddon::CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance)
+ADDON_STATUS CMyAddon::CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, const std::string& version, KODI_HANDLE& addonInstance)
 {
-  addonInstance = new CEncoderLame(instance);
+  addonInstance = new CEncoderLame(instance, version);
   return ADDON_STATUS_OK;
 }
 
