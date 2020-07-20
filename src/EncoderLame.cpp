@@ -5,11 +5,11 @@
  *  See LICENSE.md for more information.
  */
 
-#include <lame/lame.h>
-#include <kodi/addon-instance/AudioEncoder.h>
-#include <string.h>
-#include <stdlib.h>
 #include <algorithm>
+#include <kodi/addon-instance/AudioEncoder.h>
+#include <lame/lame.h>
+#include <stdlib.h>
+#include <string.h>
 
 class ATTRIBUTE_HIDDEN CEncoderLame : public kodi::addon::CInstanceAudioEncoder
 {
@@ -33,18 +33,16 @@ public:
   bool Finish() override;
 
 private:
-  lame_global_flags* m_encoder;       ///< lame encoder context
-  int                m_audio_pos;     ///< audio position in file
-  uint8_t            m_buffer[65536]; ///< buffer for writing out audio data
-  int                m_preset;
-  int                m_bitrate;
+  lame_global_flags* m_encoder; ///< lame encoder context
+  int m_audio_pos; ///< audio position in file
+  uint8_t m_buffer[65536]; ///< buffer for writing out audio data
+  int m_preset;
+  int m_bitrate;
 };
 
 
 CEncoderLame::CEncoderLame(KODI_HANDLE instance, const std::string& version)
-  : CInstanceAudioEncoder(instance, version),
-    m_audio_pos(0),
-    m_preset(-1)
+  : CInstanceAudioEncoder(instance, version), m_audio_pos(0), m_preset(-1)
 {
   m_encoder = lame_init();
   if (!m_encoder)
@@ -77,11 +75,18 @@ CEncoderLame::~CEncoderLame()
   lame_close(m_encoder);
 }
 
-bool CEncoderLame::Start(int inChannels, int inRate, int inBits,
-                         const std::string& title, const std::string& artist,
-                         const std::string& albumartist, const std::string& album,
-                         const std::string& year, const std::string& track, const std::string& genre,
-                         const std::string& comment, int trackLength)
+bool CEncoderLame::Start(int inChannels,
+                         int inRate,
+                         int inBits,
+                         const std::string& title,
+                         const std::string& artist,
+                         const std::string& albumartist,
+                         const std::string& album,
+                         const std::string& year,
+                         const std::string& track,
+                         const std::string& genre,
+                         const std::string& comment,
+                         int trackLength)
 {
   if (!m_encoder)
     return false;
@@ -108,7 +113,7 @@ bool CEncoderLame::Start(int inChannels, int inRate, int inBits,
   id3tag_set_year(m_encoder, year.c_str());
   id3tag_set_track(m_encoder, track.c_str());
   int test = id3tag_set_genre(m_encoder, genre.c_str());
-  if(test==-1)
+  if (test == -1)
     id3tag_set_genre(m_encoder, "Other");
 
   // Now that all the options are set, lame needs to analyze them and
@@ -135,14 +140,15 @@ int CEncoderLame::Encode(int numBytesRead, const uint8_t* stream)
     return -1;
 
   // note: assumes 2ch 16bit atm
-  const int bytes_per_frame = 2*2;
+  const int bytes_per_frame = 2 * 2;
 
   int bytes_left = numBytesRead;
   while (bytes_left)
   {
     const int frames = std::min(bytes_left / bytes_per_frame, 4096);
 
-    int written = lame_encode_buffer_interleaved(m_encoder, (short*)stream, frames, m_buffer, sizeof(m_buffer));
+    int written = lame_encode_buffer_interleaved(m_encoder, (short*)stream, frames, m_buffer,
+                                                 sizeof(m_buffer));
     if (written < 0)
       return -1; // error
     Write(m_buffer, written);
@@ -188,10 +194,18 @@ class ATTRIBUTE_HIDDEN CMyAddon : public kodi::addon::CAddonBase
 {
 public:
   CMyAddon() = default;
-  ADDON_STATUS CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, const std::string& version, KODI_HANDLE& addonInstance) override;
+  ADDON_STATUS CreateInstance(int instanceType,
+                              const std::string& instanceID,
+                              KODI_HANDLE instance,
+                              const std::string& version,
+                              KODI_HANDLE& addonInstance) override;
 };
 
-ADDON_STATUS CMyAddon::CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, const std::string& version, KODI_HANDLE& addonInstance)
+ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
+                                      const std::string& instanceID,
+                                      KODI_HANDLE instance,
+                                      const std::string& version,
+                                      KODI_HANDLE& addonInstance)
 {
   addonInstance = new CEncoderLame(instance, version);
   return ADDON_STATUS_OK;
