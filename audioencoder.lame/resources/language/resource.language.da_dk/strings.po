@@ -17,6 +17,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.6.1\n"
 
+msgctxt "Addon Summary"
+msgid "LAME is a high quality MPEG Audio Layer III (MP3)"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "It use LAME, the high quality MPEG Audio Layer III (MP3) encoder licensed under the LGPL."
+msgstr ""
+
 msgctxt "#30000"
 msgid "Preset"
 msgstr "Forudindstilling"
