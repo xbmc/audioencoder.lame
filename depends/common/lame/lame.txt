@@ -1,1 +1,1 @@
-lame http://mirrors.kodi.tv/build-deps/sources/lame-3.100.tar.gz
+lame https://sourceforge.net/code-snapshots/svn/l/la/lame/svn/lame-svn-r6507-trunk-lame.zip
