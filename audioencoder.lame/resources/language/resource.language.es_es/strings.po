@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Addons\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/audioencoder.lame/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-08-18 07:29+0000\n"
+"PO-Revision-Date: 2022-01-18 15:13+0000\n"
 "Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-audio-decodersencoders/audioencoder-lame/es_es/>\n"
 "Language: es_es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.10.1\n"
 
 msgctxt "Addon Summary"
 msgid "LAME is a high quality MPEG Audio Layer III (MP3)"
@@ -73,19 +73,19 @@ msgstr "{0:d} kHz"
 #. Setting to select used ID3 version for created mp3's
 msgctxt "#30009"
 msgid "Used ID3 tag version"
-msgstr ""
+msgstr "Versión de etiqueta ID3 usada"
 
 #. Help text to setting on id 30009
 msgctxt "#30010"
 msgid "To specify the ID3 version used for the created MP3 file."
-msgstr ""
+msgstr "Especificar qué versión de ID3 usar para el archivo MP3 creado."
 
 #. Selection field for setting on id 30009
 msgctxt "#30011"
 msgid "ID3v1"
-msgstr ""
+msgstr "ID3v1"
 
 #. Selection field for setting on id 30009
 msgctxt "#30012"
 msgid "ID3v2"
-msgstr ""
+msgstr "ID3v2"

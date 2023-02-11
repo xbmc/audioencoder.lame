@@ -5,86 +5,87 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Addons\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/audioencoder.lame/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-01-11 10:15+0000\n"
+"Last-Translator: gogogogi <trebelnik2@gmail.com>\n"
+"Language-Team: Croatian <https://kodi.weblate.cloud/projects/kodi-add-ons-audio-decodersencoders/audioencoder-lame/hr_hr/>\n"
 "Language: hr_hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15\n"
 
 msgctxt "Addon Summary"
 msgid "LAME is a high quality MPEG Audio Layer III (MP3)"
-msgstr ""
+msgstr "LAME je visoko kvalitetni MPEG Audio Layer III (MP3)"
 
 msgctxt "Addon Description"
 msgid "It use LAME, the high quality MPEG Audio Layer III (MP3) encoder licensed under the LGPL."
-msgstr ""
+msgstr "Koristi LAME, visoko kvalitetni MPEG Audio Layer III (MP3) enkôder licenciran pod uvjetima LGPL."
 
 #. Settings label to select wanted preset of MP3 encoding, possible selection values defined with id's 30002, 30003, 30004 and 30005
 msgctxt "#30000"
 msgid "Preset"
-msgstr ""
+msgstr "Predložak"
 
 #. Help text to setting on id 30000
 msgctxt "#30001"
 msgid "Enables some preconfigured settings"
-msgstr ""
+msgstr "Omogućuje određene predpodešene postavke"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30002"
 msgid "Medium"
-msgstr ""
+msgstr "Srednje"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30003"
 msgid "Standard"
-msgstr ""
+msgstr "Standardno"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30004"
 msgid "Extreme"
-msgstr ""
+msgstr "Ekstremno"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30005"
 msgid "Constant bitrate"
-msgstr ""
+msgstr "Nepromjenjiva brzina prijenosa"
 
 #. Setting to select wanted bitrate. This setting becomes visible if as preset "Constant bitrate" is selected (id 30005).
 msgctxt "#30006"
 msgid "Bitrate"
-msgstr ""
+msgstr "Brzina prijenosa"
 
 #. Help text to setting on id 30006
 msgctxt "#30007"
 msgid "The bitrate to be used"
-msgstr ""
+msgstr "Brzina prijenosa koja se koristi"
 
 #. Format label about selected bitrate with setting on id 30000
 msgctxt "#30008"
 msgid "{0:d} kHz"
-msgstr ""
+msgstr "{0:d} kHz"
 
 #. Setting to select used ID3 version for created mp3's
 msgctxt "#30009"
 msgid "Used ID3 tag version"
-msgstr ""
+msgstr "Korištena ID3 inačica oznake"
 
 #. Help text to setting on id 30009
 msgctxt "#30010"
 msgid "To specify the ID3 version used for the created MP3 file."
-msgstr ""
+msgstr "Za određivanje ID3 inačice korištene za stvorenu MP3 datoteku."
 
 #. Selection field for setting on id 30009
 msgctxt "#30011"
 msgid "ID3v1"
-msgstr ""
+msgstr "ID3v1"
 
 #. Selection field for setting on id 30009
 msgctxt "#30012"
 msgid "ID3v2"
-msgstr ""
+msgstr "ID3v2"
