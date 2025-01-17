@@ -5,86 +5,90 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Addons\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/audioencoder.lame/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-05-19 01:14+0000\n"
+"Last-Translator: Havok Dan <havokdan@yahoo.com.br>\n"
+"Language-Team: Portuguese (Brazil) <https://kodi.weblate.cloud/projects/kodi-add-ons-audio-decodersencoders/audioencoder-lame/pt_br/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.5.4\n"
 
 msgctxt "Addon Summary"
 msgid "LAME is a high quality MPEG Audio Layer III (MP3)"
-msgstr ""
+msgstr "LAME é um MPEG Audio Layer III (MP3) de alta qualidade"
 
 msgctxt "Addon Description"
 msgid "It use LAME, the high quality MPEG Audio Layer III (MP3) encoder licensed under the LGPL."
-msgstr ""
+msgstr "Ele usa LAME, o codificador MPEG Audio Layer III (MP3) de alta qualidade licenciado sob a LGPL."
 
 #. Settings label to select wanted preset of MP3 encoding, possible selection values defined with id's 30002, 30003, 30004 and 30005
 msgctxt "#30000"
 msgid "Preset"
-msgstr ""
+msgstr "Definição"
 
 #. Help text to setting on id 30000
 msgctxt "#30001"
 msgid "Enables some preconfigured settings"
-msgstr ""
+msgstr "Ativa algumas configurações pré-configuradas"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30002"
 msgid "Medium"
-msgstr ""
+msgstr "Médio"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30003"
 msgid "Standard"
-msgstr ""
+msgstr "Padrão"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30004"
 msgid "Extreme"
-msgstr ""
+msgstr "Extremo"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30005"
 msgid "Constant bitrate"
-msgstr ""
+msgstr "Taxa de bits constante"
 
 #. Setting to select wanted bitrate. This setting becomes visible if as preset "Constant bitrate" is selected (id 30005).
 msgctxt "#30006"
 msgid "Bitrate"
-msgstr ""
+msgstr "Taxa de bits"
 
 #. Help text to setting on id 30006
 msgctxt "#30007"
 msgid "The bitrate to be used"
-msgstr ""
+msgstr "A taxa de bits a ser usada"
 
 #. Format label about selected bitrate with setting on id 30000
+#, fuzzy
 msgctxt "#30008"
 msgid "{0:d} kHz"
-msgstr ""
+msgstr "{0:d} kHz"
 
 #. Setting to select used ID3 version for created mp3's
 msgctxt "#30009"
 msgid "Used ID3 tag version"
-msgstr ""
+msgstr "Versão da tag ID3 usada"
 
 #. Help text to setting on id 30009
 msgctxt "#30010"
 msgid "To specify the ID3 version used for the created MP3 file."
-msgstr ""
+msgstr "Para especificar a versão ID3 usada para o arquivo MP3 criado."
 
 #. Selection field for setting on id 30009
+#, fuzzy
 msgctxt "#30011"
 msgid "ID3v1"
-msgstr ""
+msgstr "ID3v1"
 
 #. Selection field for setting on id 30009
+#, fuzzy
 msgctxt "#30012"
 msgid "ID3v2"
-msgstr ""
+msgstr "ID3v2"

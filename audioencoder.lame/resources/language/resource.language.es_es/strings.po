@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Addons\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-18 15:13+0000\n"
-"Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
+"PO-Revision-Date: 2023-11-18 06:11+0000\n"
+"Last-Translator: roliverosc <roliverosc@hotmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-audio-decodersencoders/audioencoder-lame/es_es/>\n"
 "Language: es_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 5.1\n"
 
 msgctxt "Addon Summary"
 msgid "LAME is a high quality MPEG Audio Layer III (MP3)"
@@ -23,7 +23,7 @@ msgstr "LAME es MPEG Audio Layer III (MP3) de alta calidad"
 
 msgctxt "Addon Description"
 msgid "It use LAME, the high quality MPEG Audio Layer III (MP3) encoder licensed under the LGPL."
-msgstr "Usa LAME, el codificador de alta calidad MPEG Audio Layer III (MP3) licenciado bajo LGPL."
+msgstr "Utiliza LAME, el codificador de alta calidad MPEG Audio Layer III (MP3) licenciado bajo LGPL."
 
 #. Settings label to select wanted preset of MP3 encoding, possible selection values defined with id's 30002, 30003, 30004 and 30005
 msgctxt "#30000"
@@ -33,7 +33,7 @@ msgstr "Preajuste"
 #. Help text to setting on id 30000
 msgctxt "#30001"
 msgid "Enables some preconfigured settings"
-msgstr "Activa algunos ajustes preconfigurados"
+msgstr "Habilita algunos ajustes preconfigurados"
 
 #. Selection value about possible encoding presets, related setting string id 30000
 msgctxt "#30002"
@@ -78,7 +78,7 @@ msgstr "Versión de etiqueta ID3 usada"
 #. Help text to setting on id 30009
 msgctxt "#30010"
 msgid "To specify the ID3 version used for the created MP3 file."
-msgstr "Especificar qué versión de ID3 usar para el archivo MP3 creado."
+msgstr "Especifica qué versión de ID3 usar para el archivo MP3 creado."
 
 #. Selection field for setting on id 30009
 msgctxt "#30011"
