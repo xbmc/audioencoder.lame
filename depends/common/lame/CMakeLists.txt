@@ -4,14 +4,13 @@ project(lame)
 include(ExternalProject)
 externalproject_add(lame
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
-                    UPDATE_COMMAND autoreconf -vif
-                    CONFIGURE_COMMAND <SOURCE_DIR>/configure 
+                    UPDATE_COMMAND ""
+                    CONFIGURE_COMMAND <SOURCE_DIR>/configure
                       --prefix=${OUTPUT_DIR}
-                      --disable-gtktest
                       --disable-frontend
                       --disable-decoder
                       --disable-shared
-                      "CFLAGS=-fPIC -DPIC"
+                      "CFLAGS=${CMAKE_C_FLAGS} -fPIC -DPIC"
                     BUILD_COMMAND make -C libmp3lame
                     INSTALL_COMMAND ""
                     BUILD_IN_SOURCE 1)

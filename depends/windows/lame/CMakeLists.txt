@@ -12,21 +12,9 @@ foreach(flag CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG
   endif()
 endforeach()
 
-set(MPGHIP_SOURCES mpglib/common.c
-                   mpglib/dct64_i386.c
-                   mpglib/decode_i386.c
-                   mpglib/interface.c
-                   mpglib/layer1.c
-                   mpglib/layer2.c
-                   mpglib/layer3.c
-                   mpglib/tabinit.c)
-
-add_definitions(-DTAKEHIRO_IEEE754_HACK -DHAVE_MPGLIB -D_WINDOWS -DUSE_LAYER_2 -DWIN32 -DHAVE_CONFIG_H)
+add_definitions(-DTAKEHIRO_IEEE754_HACK -D_WINDOWS -DWIN32 -DHAVE_CONFIG_H)
 
 include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/libmp3lame ${PROJECT_SOURCE_DIR}/mpglib)
-
-add_library(mpghip ${MPGHIP_SOURCES})
-install(TARGETS mpghip DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 set(MP3LAME_SOURCES libmp3lame/bitstream.c
                     libmp3lame/encoder.c

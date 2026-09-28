@@ -1,1 +1,1 @@
-lame http://mirrors.kodi.tv/build-deps/sources/lame-3.100.tar.gz
+lame https://downloads.sourceforge.net/project/lame/lame/4.0/lame-4.0.tar.gz
